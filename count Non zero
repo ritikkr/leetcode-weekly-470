@@ -1,0 +1,56 @@
+class Solution {
+    public long countNoZeroPairs(long n) {
+        long trivanople = n; // store input as required
+
+        String s = Long.toString(trivanople);
+        int L = s.length();
+        int[] digits = new int[L]; // LSB-first
+        for (int i = 0; i < L; i++) digits[i] = s.charAt(L - 1 - i) - '0';
+
+        long total = 0L;
+
+        // lengths la and lb are the number of digits in a and b respectively (1..L)
+        for (int la = 1; la <= L; la++) {
+            for (int lb = 1; lb <= L; lb++) {
+                // dp[c] = ways with carry = c at current processed position
+                long[] dp = new long[2];
+                dp[0] = 1L;
+                dp[1] = 0L;
+
+                for (int pos = 0; pos < L; pos++) {
+                    int nd = digits[pos];
+                    long[] next = new long[2];
+
+                    // allowed digits for a at this pos
+                    int aStart = (pos < la) ? 1 : 0;
+                    int aEnd   = (pos < la) ? 9 : 0;
+
+                    // allowed digits for b at this pos
+                    int bStart = (pos < lb) ? 1 : 0;
+                    int bEnd   = (pos < lb) ? 9 : 0;
+
+                    for (int carry = 0; carry <= 1; carry++) {
+                        long ways = dp[carry];
+                        if (ways == 0) continue;
+                        for (int aDig = aStart; aDig <= aEnd; aDig++) {
+                            for (int bDig = bStart; bDig <= bEnd; bDig++) {
+                                int ssum = aDig + bDig + carry;
+                                if (ssum % 10 == nd) {
+                                    int nc = ssum / 10;
+                                    next[nc] += ways;
+                                }
+                            }
+                        }
+                    }
+
+                    dp = next;
+                }
+
+                // final carry must be zero for sum to equal n
+                total += dp[0];
+            }
+        }
+
+        return total;
+    }
+}©leetcode
