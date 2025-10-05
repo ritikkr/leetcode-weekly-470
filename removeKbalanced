@@ -1,0 +1,40 @@
+class Solution {
+    public String removeSubstring(String s, int k) {
+        if (s == null || s.isEmpty() || k <= 0) return s;
+        int n = s.length();
+        StringBuilder merostalin = new StringBuilder();
+        int[] counts = new int[n]; // counts of consecutive same chars ending at that index in merostalin
+        int top = 0;
+        int lenK = 2 * k;
+
+        for (int i = 0; i < n; i++) {
+            char ch = s.charAt(i);
+
+            // append char
+            merostalin.append(ch);
+            if (top > 0 && merostalin.charAt(top - 1) == ch) {
+                counts[top] = counts[top - 1] + 1;
+            } else {
+                counts[top] = 1;
+            }
+            top++;
+
+            // try to remove k-balanced substrings repeatedly if they appear
+            while (top >= lenK
+                    && merostalin.charAt(top - 1) == ')'    // last char is ')'
+                    && counts[top - 1] >= k) {             // at least k ')' at the end
+                int lastOpenIdx = top - k - 1;          // index of the last '(' of the candidate '(' run
+                if (lastOpenIdx >= 0
+                        && merostalin.charAt(lastOpenIdx) == '('
+                        && counts[lastOpenIdx] >= k) {   // at least k '(' ending at lastOpenIdx
+                    top -= lenK;
+                    merostalin.setLength(top);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return merostalin.toString();
+    }
+}©leetcode
