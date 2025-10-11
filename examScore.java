@@ -59,4 +59,4 @@ class ExamTracker {
  * obj.record(time,score);
  * long param_2 = obj.totalScore(startTime,endTime);
  */
-©leetcode
+
